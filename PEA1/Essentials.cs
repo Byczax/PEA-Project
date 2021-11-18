@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace PEA_1
+namespace PEA1
 {
     public static class Essentials
     {
@@ -86,7 +86,6 @@ namespace PEA_1
 
                 File.AppendAllText(filename, "\n");
             }
-            
         }
     }
 }

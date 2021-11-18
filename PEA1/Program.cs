@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using PEA1;
 
 internal static class InfoString
 {
@@ -20,7 +19,7 @@ internal static class InfoString
 }
 
 
-namespace PEA_1
+namespace PEA1
 {
     internal static class Program
     {
@@ -190,14 +189,11 @@ namespace PEA_1
                 for (var i = minSize; i <= maxSizeBruteForce; i++)
                 {
                     for (var j = 0; j < repetition; j++)
-                    {
                         File.AppendAllText("BruteForce.csv",
                             $"{i};{Essentials.MeasureTime(Algorithms.TheBestBruteForce, Essentials.GenerateRandomGraph(i))}\n");
-                    }
 
                     Console.WriteLine($"{Percent(maxSizeBruteForce, minSize, i)}%");
                 }
-
             }
 
             void TestDynamicProgramming()
@@ -205,10 +201,8 @@ namespace PEA_1
                 for (var i = minSize; i <= maxSizeDynamicProgramming; i++)
                 {
                     for (var j = 0; j < repetition; j++)
-                    {
                         File.AppendAllText("DynamicProgramming.csv",
                             $"{i};{Essentials.MeasureTime(Algorithms.DynamicProgramming, Essentials.GenerateRandomGraph(i))}\n");
-                    }
 
                     Console.WriteLine($"{Percent(maxSizeDynamicProgramming, minSize, i)}%");
                 }
@@ -221,10 +215,8 @@ namespace PEA_1
                 for (var i = minSize; i <= maxSizeBranchAndBound; i++)
                 {
                     for (var j = 0; j < repetition; j++)
-                    {
                         File.AppendAllText("BranchAndBoundBreathSearch.csv",
                             $"{i};{Essentials.MeasureTime(BranchAndBound.BranchAndBoundBreathFirst, Essentials.GenerateRandomGraph(i))}\n");
-                    }
 
                     Console.WriteLine($"{Percent(maxSizeBranchAndBound, minSize, i)}%");
                 }
@@ -237,10 +229,8 @@ namespace PEA_1
                 for (var i = minSize; i <= maxSizeBranchAndBound; i++)
                 {
                     for (var j = 0; j < repetition; j++)
-                    {
                         File.AppendAllText("BranchAndBoundDeepSearch.csv",
                             $"{i};{Essentials.MeasureTime(BranchAndBound.BranchAndBoundDepthFirst, Essentials.GenerateRandomGraph(i))}\n");
-                    }
 
                     Console.WriteLine($"{Percent(maxSizeBranchAndBound, minSize, i)}%");
                 }
@@ -294,7 +284,7 @@ namespace PEA_1
                         TestBranchAndBoundDeep();
                         Console.WriteLine("Completed!");
                         break;
-                    default:// Wrong choice
+                    default: // Wrong choice
                         Console.WriteLine("ERROR, Wrong choice");
                         break;
                 }

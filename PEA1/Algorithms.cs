@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PEA_1
+namespace PEA1
 {
     public static class Algorithms
     {
@@ -19,6 +19,7 @@ namespace PEA_1
                 _bestPermutation = (int[])list.Clone();
             }
             else
+            {
                 for (var i = k; i <= m; ++i)
                 {
                     var temp = list[k];
@@ -31,6 +32,7 @@ namespace PEA_1
                     list[k] = list[i];
                     list[i] = temp;
                 }
+            }
         }
 
         public static int[] TheBestBruteForce(Matrix givenMatrix)
@@ -39,10 +41,7 @@ namespace PEA_1
             var permutation = new int[_matrix.Size - 1];
             _bestRoad = int.MaxValue;
             _bestPermutation = new int[_matrix.Size];
-            for (var i = 1; i < _matrix.Size; ++i)
-            {
-                permutation[i - 1] = i;
-            }
+            for (var i = 1; i < _matrix.Size; ++i) permutation[i - 1] = i;
 
             GetPer(permutation, 0, permutation.Length - 1);
             return _bestPermutation;
@@ -134,7 +133,7 @@ namespace PEA_1
                     if (newMin >= min) continue; // if new road is better, save
                     min = newMin;
                     // save road
-                    solutions[bitMask, vertex] = new Tuple<int, int>(0,i);
+                    solutions[bitMask, vertex] = new Tuple<int, int>(0, i);
                     // vertices[bitMask, vertex] = i;
                 }
 

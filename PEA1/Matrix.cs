@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PEA_1
+namespace PEA1
 {
     public class Matrix
     {
+        public readonly int[,] Array;
+
+        public readonly int Size;
+
         public Matrix(int size)
         {
             Array = new int[size, size];
             Size = size;
         }
-
-        public readonly int[,] Array;
-
-        public readonly int Size;
 
         public int CalculateRoad(List<int> list)
         {
