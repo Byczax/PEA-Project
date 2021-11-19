@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace PEA2
 {
-    public class Algorithms
+    public static class Algorithms
     {
         private static Matrix _matrix;
         private static int _bestRoad;
         private static int[] _bestPermutation;
-        private static Random random = new Random();
+        private static readonly Random Random = new Random();
 
         public static int[] TabuSearch(Matrix givenMatrix)
         {
@@ -16,7 +17,7 @@ namespace PEA2
             return _bestPermutation;
         }
 
-        public static int[] SimulatedAnnealing(Matrix givenMatrix, int numberOfTrials)
+        public static int[] SimulatedAnnealing(Matrix givenMatrix, int trialTime)
         {
             // fast swap
             static void Swap(int[] arr, int index1, int index2)
@@ -37,18 +38,20 @@ namespace PEA2
             }
 
             _matrix = givenMatrix;
-            var permutation = Enumerable.Range(0, _matrix.Size).ToArray();
+            var permutation = Enumerable.Range(0, _matrix.Size).ToArray(); // set start solution
             _bestRoad = _matrix.CalculateRoadArray(permutation);
-            var trial = 0;
-            double temperature = _bestRoad * _matrix.Size;
+            double temperature = _bestRoad * _matrix.Size; // set temperature
             const double alpha = 0.99;
-            while (trial < numberOfTrials)
+            var timer = new Stopwatch();
+            trialTime *= 1000; // change to ms
+            timer.Start();
+            while (timer.ElapsedMilliseconds <= trialTime)
             {
-                var randomStart = random.Next(0, _matrix.Size);
+                var randomStart = Random.Next(0, _matrix.Size);
                 int randomNext;
                 while (true)
                 {
-                    randomNext = random.Next(0, _matrix.Size);
+                    randomNext = Random.Next(0, _matrix.Size);
                     if (randomStart != randomNext)
                         break;
                 }
@@ -60,14 +63,13 @@ namespace PEA2
                     _bestPermutation = (int[])permutation.Clone();
                     _bestRoad = actualCost;
                 }
-                else if (random.Next() < Math.Exp(-(actualCost - _bestRoad) / temperature))
+                else if (Random.Next() < Math.Exp(-(actualCost - _bestRoad) / temperature))
                 {
                     _bestPermutation = (int[])permutation.Clone();
                     _bestRoad = actualCost;
                 }
 
                 temperature = alpha * temperature;
-                ++trial;
             }
 
             return _bestPermutation;
