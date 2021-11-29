@@ -198,14 +198,14 @@ namespace PEA2
                 Console.WriteLine("=========================");
             }
 
-            void PrintToFileData(int road, int time)
+            void PrintToFileData(string algorithm, int road, int time)
             {
                 var relativeError = (road - correctRoad) / (correctRoad * 1.0);
-                File.AppendAllText(filename, $"Algorithm:TabuSearch;Time[s]:{time};Neighbourhood:");
+                File.AppendAllText(filename, $"Algorithm:{algorithm};Time[s]:{time};Neighbourhood:");
                 File.AppendAllText(filename, neighbourhood == Algorithms.Swap ? "SWAP" : "REVERSE");
                 File.AppendAllText(filename, diversification ? ";Diversification:ON" : ";Diversification:OFF");
                 File.AppendAllText(filename,
-                    $";Road:{road};BestRoad:{correctRoad};RelativeError[%]:{relativeError}\n");
+                    $";Size:{matrix.Size};Road:{road};BestRoad:{correctRoad};RelativeError[%]:{relativeError}\n");
             }
 
             void TestTabuSearchAlgorithm()
@@ -223,7 +223,7 @@ namespace PEA2
                     {
                         var road = Algorithms.TabuSearch(matrix, i, neighbourhood, diversification);
                         var roadValue = matrix.CalculateFullRoad(road);
-                        PrintToFileData(roadValue, i);
+                        PrintToFileData("TabuSearch",roadValue, i);
                     }
                 }
             }
@@ -243,7 +243,7 @@ namespace PEA2
                     {
                         var road = Algorithms.SimulatedAnnealing(matrix, i, neighbourhood);
                         var roadValue = matrix.CalculateFullRoad(road);
-                        PrintToFileData(roadValue, i);
+                        PrintToFileData("SimulatedAnnealing",roadValue, i);
                     }
                 }
             }
@@ -253,8 +253,7 @@ namespace PEA2
                 PrintParamsValues();
                 Console.WriteLine("0.Exit\n" +
                                   "1.Read file and set time\n" +
-                                  "2. Test Annealing\n" +
-                                  "3. Test Tabu Search\n"); // print menu
+                                  "2. Test All\n"); // print menu
                 var input = int.Parse(Console.ReadLine() ?? string.Empty); // get value from user
                 switch (input)
                 {
@@ -275,8 +274,8 @@ namespace PEA2
                         TestAnnealingAlgorithm();
                         neighbourhood = Algorithms.Reverse;
                         TestAnnealingAlgorithm();
-                        break;
-                    case 3:
+                    //     break;
+                    // case 3:
                         neighbourhood = Algorithms.Swap;
                         diversification = false;
                         TestTabuSearchAlgorithm();
