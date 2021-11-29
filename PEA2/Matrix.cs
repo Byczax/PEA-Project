@@ -21,6 +21,7 @@ namespace PEA2
             for (var i = 0; i < list.Count - 1; i++) road += Array[list[i], list[i + 1]];
             return road;
         }
+
         public int CalculateRoadArray(int[] array)
         {
             var road = 0;
@@ -32,7 +33,7 @@ namespace PEA2
         {
             var road = 0;
             for (var i = 0; i < list.Length - 1; i++) road += Array[list[i], list[i + 1]];
-            return Array[0, list[0]] + road + Array[list[^1], 0];
+            return road + Array[list[^1], list[0]];
         }
 
         public void Display()
