@@ -45,11 +45,23 @@ namespace PEA2
         public static void DisplayArray(int[] array)
         {
             Console.Write(array[0]);
-            foreach (var element in array.Skip(1))
-            {
-                Console.Write(", " + element);
-            }
+            foreach (var element in array.Skip(1)) Console.Write(", " + element);
+
             Console.WriteLine();
+        }
+
+        public static void DisplayFullArray(int[] array)
+        {
+            if (array == null)
+            {
+                Console.WriteLine("ERROR, EMPTY, something gone WRONG!");
+                return;
+            }
+
+            Console.Write(array[0]);
+            foreach (var element in array.Skip(1)) Console.Write(", " + element);
+
+            Console.WriteLine(", " + array[0]);
         }
 
         public static void Display0List(IEnumerable<int> list)
@@ -67,7 +79,7 @@ namespace PEA2
             timer.Stop();
             return CalculateTimeMs(timer); // return ms
         }
-        
+
         public static void MeasureAndPrint(Func<Matrix, int[]> algorithm, Matrix matrix)
         {
             var timer = new Stopwatch();
@@ -75,9 +87,9 @@ namespace PEA2
             var bestPermutation = algorithm(matrix);
             timer.Stop();
             Console.WriteLine("best permutation:");
-            Essentials.DisplayArray(bestPermutation);
+            DisplayArray(bestPermutation);
             Console.WriteLine("Road Value:\n" + matrix.CalculateRoad(bestPermutation));
-            Console.WriteLine("Time:\n" + Essentials.CalculateTimeMs(timer) + " ms");
+            Console.WriteLine("Time:\n" + CalculateTimeMs(timer) + " ms");
         }
 
         public static double CalculateTimeMs(Stopwatch timer)
