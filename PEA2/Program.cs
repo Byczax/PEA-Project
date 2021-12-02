@@ -125,7 +125,7 @@ namespace PEA2
                         break;
                     case 5: // change params
                         Console.Write("Write wait time [s]: ");
-                        trialTime = double.Parse(Console.ReadLine() ?? throw new InvalidOperationException());
+                        trialTime = double.Parse(Console.ReadLine() ?? "1");
                         Console.Write("Neighbourhood ");
                         Console.WriteLine(neighbourhood == Algorithms.Swap ? "SWAP" : "REVERSE");
                         Console.WriteLine("Change?: (write something)");
@@ -151,7 +151,8 @@ namespace PEA2
                             break;
                         }
 
-                        bestPermutation = Algorithms.SimulatedAnnealing(matrix, trialTime, neighbourhood);
+                        bestPermutation =
+                            Algorithms.SimulatedAnnealing(matrix, trialTime, neighbourhood, false);
                         DisplayResults(bestPermutation);
                         break;
                     case 7: // Tabu Search Algorithm
@@ -161,7 +162,8 @@ namespace PEA2
                             break;
                         }
 
-                        bestPermutation = Algorithms.TabuSearch(matrix, trialTime, neighbourhood, diversification);
+                        bestPermutation =
+                            Algorithms.TabuSearch(matrix, trialTime, neighbourhood, diversification, false);
                         DisplayResults(bestPermutation);
                         break;
                     default:
@@ -176,83 +178,60 @@ namespace PEA2
             Matrix matrix = null; // field for matrices
             var exit = false; // boolean for program work
             var diversification = false;
-            Action<int[], int, int> neighbourhood = Algorithms.Swap;
-            var trialTime = 1;
-            const string filename = "results.csv";
-            const int repeatTime = 5;
+            Action<int[], int, int> neighbourhood;
+            // var trialTime = 1;
+            // const string filename = "results.csv";
 
             var correctRoad = 0;
 
             void PrintParamsValues()
             {
                 Console.WriteLine("=========================");
-                Console.WriteLine($"Time [s]: {trialTime}");
-                Console.Write("Neighbourhood: ");
-                Console.WriteLine(neighbourhood == Algorithms.Swap ? "SWAP" : "REVERSE");
-                Console.Write("Diversification: ");
-                Console.WriteLine(diversification ? "Diversification: ON" : "Diversification: OFF");
+                // Console.WriteLine($"Time [s]: {trialTime}");
+                // Console.Write("Neighbourhood: ");
+                // Console.WriteLine(neighbourhood == Algorithms.Swap ? "SWAP" : "REVERSE");
+                // Console.Write("Diversification: ");
+                // Console.WriteLine(diversification ? "Diversification: ON" : "Diversification: OFF");
                 Console.WriteLine(matrix != null
                     ? $"Loaded matrix size: {matrix.Size}"
                     : "Loaded matrix size: NULL");
-                Console.WriteLine("Correct Road: ");
+                Console.WriteLine($"Correct Road: {correctRoad}");
                 Console.WriteLine("=========================");
             }
 
-            void PrintToFileData(string algorithm, int road, int time)
+            string ReturnParams(string algorithm, string split)
             {
-                var relativeError = (road - correctRoad) / (correctRoad * 1.0);
-                File.AppendAllText(filename, $"Algorithm:{algorithm};Time[s]:{time};Neighbourhood:");
-                File.AppendAllText(filename, neighbourhood == Algorithms.Swap ? "SWAP" : "REVERSE");
-                File.AppendAllText(filename, diversification ? ";Diversification:ON" : ";Diversification:OFF");
-                File.AppendAllText(filename,
-                    $";Size:{matrix.Size};Road:{road};BestRoad:{correctRoad};RelativeError[%]:{relativeError}\n");
+                var resultString = "";
+
+                resultString += $"{algorithm}{split}";
+                resultString += neighbourhood == Algorithms.Swap ? "SWAP" : "REVERSE";
+                if (algorithm == "TabuSearch") resultString += diversification ? $"{split}ON" : $"{split}OFF";
+
+                if (matrix != null) resultString += $"{split}{matrix.Size}";
+                return resultString;
             }
 
-            void TestTabuSearchAlgorithm()
+            void TestFullAnnealingAlgorithm(double time)
             {
-                if (matrix == null) return;
-                trialTime = matrix.Size switch
-                {
-                    < 20 => 1,
-                    < 100 => 2,
-                    _ => 10
-                };
-                for (var i = trialTime; i <= trialTime * 5; i += trialTime)
-                {
-                    for (var j = 0; j < repeatTime; j++)
-                    {
-                        var road = Algorithms.TabuSearch(matrix, i, neighbourhood, diversification);
-                        var roadValue = matrix.CalculateFullRoad(road);
-                        PrintToFileData("TabuSearch",roadValue, i);
-                    }
-                }
+                var testFileName = $"{ReturnParams("SimulatedAnnealing", "-")}";
+                File.AppendAllText("results/" + testFileName + ".csv",
+                    $"{correctRoad}\n");
+                Algorithms.SimulatedAnnealing(matrix, time, neighbourhood, true, testFileName);
             }
 
-            void TestAnnealingAlgorithm()
+            void TestFullTabuSearchAlgorithm(double time)
             {
-                if (matrix == null) return;
-                trialTime = matrix.Size switch
-                {
-                    < 20 => 1,
-                    < 100 => 2,
-                    _ => 10
-                };
-                for (var i = trialTime; i <= trialTime * 5; i += trialTime)
-                {
-                    for (var j = 0; j < repeatTime; j++)
-                    {
-                        var road = Algorithms.SimulatedAnnealing(matrix, i, neighbourhood);
-                        var roadValue = matrix.CalculateFullRoad(road);
-                        PrintToFileData("SimulatedAnnealing",roadValue, i);
-                    }
-                }
+                var testFileName = $"{ReturnParams("TabuSearch", "-")}";
+                File.AppendAllText("results/" + testFileName + ".csv",
+                    $"{correctRoad}\n");
+                Algorithms.TabuSearch(matrix, time, neighbourhood, diversification, true, testFileName);
             }
 
             while (!exit)
             {
                 PrintParamsValues();
                 Console.WriteLine("0.Exit\n" +
-                                  "1.Read file and set time\n" +
+                                  "1.Read file + correct road\n" +
                                   "2. Test All\n"); // print menu
                 var input = int.Parse(Console.ReadLine() ?? string.Empty); // get value from user
                 switch (input)
@@ -263,49 +242,46 @@ namespace PEA2
                     case 1: // read given file
                         Console.Write(InfoString.GetFileName);
                         matrix = Essentials.ReadFile(Console.ReadLine());
-                        Console.Write("Write correct road: ");
-                        correctRoad = int.Parse(Console.ReadLine() ?? throw new InvalidOperationException());
-                        // Console.Write("Write wait time [s]: ");
-                        // trialTime = int.Parse(Console.ReadLine() ?? throw new InvalidOperationException());
+                        if (matrix != null)
+                        {
+                            Console.Write("Write correct road: ");
+                            correctRoad = int.Parse(Console.ReadLine() ?? throw new InvalidOperationException());
+                        }
 
                         break;
                     case 2: // test Annealing
+                        var setTime = 0.0;
+                        if (matrix != null)
+                            setTime = matrix.Size switch
+                            {
+                                < 20 => 0.5,
+                                < 100 => 1,
+                                < 200 => 10,
+                                _ => 60
+                            };
+
                         neighbourhood = Algorithms.Swap;
-                        TestAnnealingAlgorithm();
+                        Console.WriteLine(ReturnParams("SimulatedAnnealing", "-"));
+                        TestFullAnnealingAlgorithm(setTime);
                         neighbourhood = Algorithms.Reverse;
-                        TestAnnealingAlgorithm();
-                    //     break;
-                    // case 3:
+                        Console.WriteLine(ReturnParams("SimulatedAnnealing", "-"));
+                        TestFullAnnealingAlgorithm(setTime);
                         neighbourhood = Algorithms.Swap;
                         diversification = false;
-                        TestTabuSearchAlgorithm();
+                        Console.WriteLine(ReturnParams("TabuSearch", "-"));
+                        TestFullTabuSearchAlgorithm(setTime);
+                        Console.WriteLine(ReturnParams("TabuSearch", "-"));
                         neighbourhood = Algorithms.Reverse;
-                        TestTabuSearchAlgorithm();
+                        Console.WriteLine(ReturnParams("TabuSearch", "-"));
+                        TestFullTabuSearchAlgorithm(setTime);
                         neighbourhood = Algorithms.Swap;
                         diversification = true;
-                        TestTabuSearchAlgorithm();
+                        Console.WriteLine(ReturnParams("TabuSearch", "-"));
+                        TestFullTabuSearchAlgorithm(setTime);
                         neighbourhood = Algorithms.Reverse;
-                        TestTabuSearchAlgorithm();
+                        ReturnParams("TabuSearch", "-");
+                        TestFullTabuSearchAlgorithm(setTime);
                         break;
-
-
-                    // Console.Write("Write wait time [s]: ");
-                    // trialTime = double.Parse(Console.ReadLine() ?? throw new InvalidOperationException());
-                    // Console.Write("Neighbourhood ");
-                    // Console.WriteLine(neighbourhood == Algorithms.Swap ? "SWAP" : "REVERSE");
-                    // Console.WriteLine("Change?: (write something)");
-                    // if (Console.ReadLine() != null)
-                    // {
-                    //     if (neighbourhood == Algorithms.Swap)
-                    //         neighbourhood = Algorithms.Reverse;
-                    //     else
-                    //         neighbourhood = Algorithms.Swap;
-                    // }
-                    //
-                    // Console.Write("Diversification ");
-                    // Console.WriteLine(diversification ? "ON" : "OFF");
-                    // Console.WriteLine("Change?: (write something)");
-                    // if (Console.ReadLine() != null) diversification = !diversification;
                 }
             }
         }

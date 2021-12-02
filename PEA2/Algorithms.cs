@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace PEA2
 {
     public static class Algorithms
     {
-        private static Matrix _matrix;
         private static int _bestRoad;
         private static int[] _bestPermutation;
         private static readonly Random Random = new();
@@ -15,13 +15,15 @@ namespace PEA2
         /// <summary>
         ///     Tabu Search Algorithm
         /// </summary>
-        /// <param name="givenMatrix"></param>
+        /// <param name="matrix"></param>
         /// <param name="trialTime"></param>
         /// <param name="neighbour"></param>
         /// <param name="diversification"></param>
+        /// <param name="testIt"></param>
+        /// <param name="testFileName"></param>
         /// <returns>the best solution found</returns>
-        public static int[] TabuSearch(Matrix givenMatrix, double trialTime, Action<int[], int, int> neighbour,
-            bool diversification)
+        public static int[] TabuSearch(Matrix matrix, double trialTime, Action<int[], int, int> neighbour,
+            bool diversification, bool testIt, string testFileName = "")
         {
             void DecrementList(int[,] list)
             {
@@ -32,42 +34,50 @@ namespace PEA2
                         --list[i, j];
             }
 
-            _matrix = givenMatrix;
-            var permutation = Enumerable.Range(0, _matrix.Size).ToArray(); // set start solution
+            var permutation = Enumerable.Range(0, matrix.Size).ToArray(); // set start solution
             _bestPermutation = (int[])permutation.Clone(); // set start as best
-            var currentRoad = _bestRoad = _matrix.CalculateFullRoad(permutation);
-            var currentPermutation = new int[_matrix.Size];
+            var currentRoad = _bestRoad = matrix.CalculateFullRoad(permutation); // calculate generated road
+            var currentPermutation = new int[matrix.Size];
 
-            var tabuList = new int[_matrix.Size, _matrix.Size];
-            var cadence = _matrix.Size;
+            var tabuList = new int[matrix.Size, matrix.Size];
+            var cadence = Convert.ToInt32(Math.Sqrt(matrix.Size)); //user input??
             var criticalEvents = 0;
+            var minValue = _bestRoad; // value for result display
 
-            var timer = new Stopwatch(); // create stopwatch
             trialTime *= 1000; // change to ms
-            timer.Restart(); // start timer
+            Timer.Restart(); // start timer
+            if (testIt)
+                File.AppendAllText("results/" + testFileName + ".csv",
+                    "Time[ticks];Local value;Global value\n");
 
-            while (timer.ElapsedMilliseconds <= trialTime)
+            while (Timer.ElapsedMilliseconds <= trialTime)
             {
                 var bestI = 0;
                 var bestJ = 0;
                 var previousRoad = currentRoad;
-                for (var i = 1; i < _matrix.Size; i++)
-                for (var j = i + 1; j < _matrix.Size; j++)
+                if (testIt)
+                    File.AppendAllText("results/" + testFileName + ".csv",
+                        $"{Timer.ElapsedTicks};{minValue};{_bestRoad}\n");
+
+                for (var i = 1; i < matrix.Size; i++)
+                for (var j = i + 1; j < matrix.Size; j++)
                 {
                     currentPermutation = (int[])permutation.Clone();
                     neighbour(currentPermutation, i, j);
+                    var actualRoad = matrix.CalculateFullRoad(currentPermutation);
 
-                    var actualRoad = _matrix.CalculateFullRoad(currentPermutation);
                     if (actualRoad >= _bestRoad && (actualRoad >= currentRoad || tabuList[i, j] != 0)) continue;
                     currentRoad = actualRoad;
                     bestI = i;
                     bestJ = j;
                 }
 
-                neighbour(permutation, bestI, bestJ);
-                tabuList[bestI, bestJ] = cadence;
+                neighbour(permutation, bestI, bestJ); // save best local permutation
+                tabuList[bestI, bestJ] = cadence; // set permutation in tabuList
 
                 DecrementList(tabuList);
+
+                if (testIt) minValue = previousRoad;
 
                 if (currentRoad < _bestRoad)
                 {
@@ -80,11 +90,10 @@ namespace PEA2
                     criticalEvents++;
                     if (criticalEvents < 20) continue;
                     Shuffle(currentPermutation);
-                    currentRoad = _matrix.CalculateFullRoad(currentPermutation);
-                    tabuList = new int[_matrix.Size, _matrix.Size];
+                    currentRoad = matrix.CalculateFullRoad(currentPermutation);
+                    tabuList = new int[matrix.Size, matrix.Size];
                 }
             }
-
 
             return _bestPermutation;
         }
@@ -92,47 +101,62 @@ namespace PEA2
         /// <summary>
         ///     Simulated Annealing algorithm
         /// </summary>
-        /// <param name="givenMatrix"></param>
+        /// <param name="matrix"></param>
         /// <param name="trialTime"></param>
         /// <param name="neighbour"></param>
+        /// <param name="testIt"></param>
+        /// <param name="testFileName"></param>
         /// <returns>the best solution found</returns>
-        public static int[] SimulatedAnnealing(Matrix givenMatrix, double trialTime, Action<int[], int, int> neighbour)
+        public static int[] SimulatedAnnealing(Matrix matrix, double trialTime, Action<int[], int, int> neighbour,
+            bool testIt,
+            string testFileName = "")
         {
             static bool AnnealingFunction(int newCost, double temperature)
             {
                 return Random.NextDouble() < Math.Exp(-(newCost - _bestRoad) / temperature);
             }
 
-
-            _matrix = givenMatrix;
-            var activePermutation = Enumerable.Range(0, _matrix.Size).ToArray(); // set start solution
+            var activePermutation = Enumerable.Range(0, matrix.Size).ToArray(); // set start solution
             _bestPermutation = (int[])activePermutation.Clone(); // set start as best
-            var localMinimumRoad =
-                _bestRoad = _matrix.CalculateFullRoad(activePermutation); // set start road value as best
+            var localMinimumRoad = _bestRoad = matrix.CalculateFullRoad(activePermutation);
             var localMinimumPermutation = (int[])activePermutation.Clone();
-            double temperature = _bestRoad * _matrix.Size; // set temperature
-            const double alpha = 0.99;
+            double temperature = _bestRoad * matrix.Size; // set temperature
+            const double alpha = 0.99; //think about other method for cooling
+
+            var minValue = _bestRoad; // test display value
 
             trialTime *= 1000; // change to ms
             Timer.Restart(); // start timer
+
+            if (testIt)
+                File.AppendAllText("results/" + testFileName + ".csv",
+                    "Time[ticks];Local value;Global value\n");
+
             while (Timer.ElapsedMilliseconds <= trialTime)
             {
-                for (var i = 0; i < 10 * _matrix.Size; i++)
+                if (testIt)
+                {
+                    File.AppendAllText("results/" + testFileName + ".csv",
+                        $"{Timer.ElapsedTicks};{minValue};{_bestRoad}\n");
+                    minValue = int.MaxValue;
+                }
+
+                for (var i = 0; i < 10 * matrix.Size; i++)
                 {
                     activePermutation = (int[])localMinimumPermutation.Clone();
-                    var randomFirstVertex = Random.Next(1, _matrix.Size); // get first random vertex (skip 0)
+                    var randomFirstVertex = Random.Next(1, matrix.Size); // get first random vertex (skip 0)
 
                     int randomSecondVertex;
                     while (true) // get second random vertex different from first (skip 0)
                     {
-                        randomSecondVertex = Random.Next(1, _matrix.Size);
+                        randomSecondVertex = Random.Next(1, matrix.Size);
                         if (randomFirstVertex != randomSecondVertex)
                             break;
                     }
 
                     neighbour(activePermutation, randomFirstVertex, randomSecondVertex);
 
-                    var actualRoad = _matrix.CalculateFullRoad(activePermutation); // calculate road with end in 0
+                    var actualRoad = matrix.CalculateFullRoad(activePermutation); // calculate road with end in 0
                     if (actualRoad < _bestRoad) // if we get better road
                     {
                         _bestPermutation = (int[])activePermutation.Clone();
@@ -149,6 +173,9 @@ namespace PEA2
                         localMinimumPermutation = (int[])activePermutation.Clone();
                         localMinimumRoad = actualRoad;
                     }
+
+                    if (minValue > actualRoad)
+                        minValue = actualRoad;
                 }
 
                 temperature *= alpha;
