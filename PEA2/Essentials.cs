@@ -10,6 +10,12 @@ namespace PEA2
     {
         public static Matrix ReadFile(string filename)
         {
+            if (filename == null || !File.Exists(filename))
+            {
+                Console.WriteLine("ERROR, Wrong filename");
+                return null;
+            }
+
             var lines = File.ReadAllLines(filename);
             var matrix = new Matrix(int.Parse(lines[0]));
             for (var i = 1; i <= int.Parse(lines[0]); i++)
@@ -42,7 +48,7 @@ namespace PEA2
             Console.WriteLine();
         }
 
-        public static void DisplayArray(int[] array)
+        private static void DisplayArray(int[] array)
         {
             Console.Write(array[0]);
             foreach (var element in array.Skip(1)) Console.Write(", " + element);
@@ -71,7 +77,7 @@ namespace PEA2
             Console.WriteLine("0");
         }
 
-        public static double MeasureTime(Func<Matrix, IList<int>> algorithm, Matrix matrix)
+        private static double MeasureTime(Func<Matrix, IList<int>> algorithm, Matrix matrix)
         {
             var timer = new Stopwatch();
             timer.Restart();
@@ -92,7 +98,7 @@ namespace PEA2
             Console.WriteLine("Time:\n" + CalculateTimeMs(timer) + " ms");
         }
 
-        public static double CalculateTimeMs(Stopwatch timer)
+        private static double CalculateTimeMs(Stopwatch timer)
         {
             return (double)1000 * timer.ElapsedTicks / Stopwatch.Frequency;
         }
