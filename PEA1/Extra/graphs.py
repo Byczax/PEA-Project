@@ -30,22 +30,13 @@ def plot_single(data, title):
     plt.figure(num=None, figsize=(20, 8), dpi=400,
                facecolor='w', edgecolor='k')
 
-    # x = np.linspace(3,13,10)
-
-    # y = []
-    # for _ in range(3,13):
-    #     y.append(((x**2)*(2**x))/100000)
-
     result = calculate_data_min(data[1])
 
     plt.plot(result[0], result[1], marker='o', linestyle='-', color='limegreen',
              linewidth=2, markersize=10)
-    # plt.plot(x, y, marker='o', linestyle='-.', color='blue',
-    #          linewidth=2, markersize=1, label=data[1][0])
 
     plt.title(title)
     plt.margins(x=None, y=None, tight=True)
-    # plt.legend(loc="upper left")
     plt.ylabel("Time [ms]")
     plt.xlabel("Element quantity")
     plt.grid(True, color="lightgrey", alpha=0.5)
