@@ -86,7 +86,7 @@ def plot_single(x, y, title):
     plt.title(title)
     plt.margins(x=None, y=None, tight=True)
     plt.ylabel("relative error [%]")
-    plt.xlabel("Element quantity")
+    plt.xlabel("time [s]")
     plt.grid(True, color="lightgrey", alpha=0.5)
     # os.chdir()
 
