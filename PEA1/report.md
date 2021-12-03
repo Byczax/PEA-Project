@@ -10,27 +10,27 @@
 | Byczko Maciej 252747 |
 
 - [Programowanie Efektywnych Algorytmów - Projekt: Sprawozdanie](#programowanie-efektywnych-algorytmów---projekt-sprawozdanie)
-  - [Wstęp teoretyczny](#wstęp-teoretyczny)
-    - [Problem komiwojażera](#problem-komiwojażera)
-    - [Przegląd zupełny (Brute Force)](#przegląd-zupełny-brute-force)
-    - [Programowanie dynamiczne (DP - Dynamic Programming)](#programowanie-dynamiczne-dp---dynamic-programming)
-    - [Metoda podziału i ograniczeń (B&B - Branch and Bound)](#metoda-podziału-i-ograniczeń-bb---branch-and-bound)
-  - [Przykłady praktyczne](#przykłady-praktyczne)
-    - [BruteForce](#bruteforce)
-    - [Metoda podziału i ograniczeń](#metoda-podziału-i-ograniczeń)
-      - [Przeszukiwanie wszerz](#przeszukiwanie-wszerz)
-      - [Przeszukiwanie wgłąb](#przeszukiwanie-wgłąb)
-      - [Wyznaczenie ograniczeń](#wyznaczenie-ograniczeń)
-    - [Programowanie Dynamiczne](#programowanie-dynamiczne)
-  - [Opis implementacji algorytmów](#opis-implementacji-algorytmów)
-  - [Plan eksperymentu](#plan-eksperymentu)
-  - [wyniki eksperymentu](#wyniki-eksperymentu)
-    - [Wyniki BruteForce](#wyniki-bruteforce)
-    - [Wyniki Branch And Bound](#wyniki-branch-and-bound)
-    - [Wyniki Dynamic Programming](#wyniki-dynamic-programming)
-    - [Porównanie algorytmów dla małych instancji](#porównanie-algorytmów-dla-małych-instancji)
-  - [Wnioski](#wnioski)
-  - [Bibliografia](#bibliografia)
+    - [Wstęp teoretyczny](#wstęp-teoretyczny)
+        - [Problem komiwojażera](#problem-komiwojażera)
+        - [Przegląd zupełny (Brute Force)](#przegląd-zupełny-brute-force)
+        - [Programowanie dynamiczne (DP - Dynamic Programming)](#programowanie-dynamiczne-dp---dynamic-programming)
+        - [Metoda podziału i ograniczeń (B&B - Branch and Bound)](#metoda-podziału-i-ograniczeń-bb---branch-and-bound)
+    - [Przykłady praktyczne](#przykłady-praktyczne)
+        - [BruteForce](#bruteforce)
+        - [Metoda podziału i ograniczeń](#metoda-podziału-i-ograniczeń)
+            - [Przeszukiwanie wszerz](#przeszukiwanie-wszerz)
+            - [Przeszukiwanie wgłąb](#przeszukiwanie-wgłąb)
+            - [Wyznaczenie ograniczeń](#wyznaczenie-ograniczeń)
+        - [Programowanie Dynamiczne](#programowanie-dynamiczne)
+    - [Opis implementacji algorytmów](#opis-implementacji-algorytmów)
+    - [Plan eksperymentu](#plan-eksperymentu)
+    - [wyniki eksperymentu](#wyniki-eksperymentu)
+        - [Wyniki BruteForce](#wyniki-bruteforce)
+        - [Wyniki Branch And Bound](#wyniki-branch-and-bound)
+        - [Wyniki Dynamic Programming](#wyniki-dynamic-programming)
+        - [Porównanie algorytmów dla małych instancji](#porównanie-algorytmów-dla-małych-instancji)
+    - [Wnioski](#wnioski)
+    - [Bibliografia](#bibliografia)
 
 ## Wstęp teoretyczny
 
@@ -117,7 +117,8 @@ Następnie wyliczaliśmy koszt każdej kombinacji i na koniec zwróciliśmy najl
 `Branch & Bound` opiera się na przeszukiwaniu drzewa reprezentującego przestrzeń rozwiązań problemu. Dzięki tak zwanym
 „odcięciom” można znacznie zredukować liczbę przeszukiwanych wierzchołków. Nazwa `Branch & Bound` wiele mówi o ogólnej
 koncepcji algorytmu - rozgałęzianie (ang. branching)
-tworzy następników (synów) danego wierzchołka, a ograniczanie (ang. bounding) odcina - czyli ściślej rzecz biorąc pomija gałęzie, które nie doprowadzą nas do optymalnego rozwiązania.
+tworzy następników (synów) danego wierzchołka, a ograniczanie (ang. bounding) odcina - czyli ściślej rzecz biorąc pomija
+gałęzie, które nie doprowadzą nas do optymalnego rozwiązania.
 
 ![Przykładowe Drzewo](..\Extra\pictures\zad1.png)
 
