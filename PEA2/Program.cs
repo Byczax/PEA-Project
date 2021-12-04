@@ -128,8 +128,8 @@ namespace PEA2
                         trialTime = double.Parse(Console.ReadLine() ?? "1");
                         Console.Write("Neighbourhood ");
                         Console.WriteLine(neighbourhood == Algorithms.Swap ? "SWAP" : "REVERSE");
-                        Console.WriteLine("Change?: (write something)");
-                        if (Console.ReadLine() != null)
+                        Console.WriteLine("Change?: (yes/no)");
+                        if (Console.ReadLine()?.ToLower() == "yes")
                         {
                             if (neighbourhood == Algorithms.Swap)
                                 neighbourhood = Algorithms.Reverse;
@@ -139,8 +139,8 @@ namespace PEA2
 
                         Console.Write("Diversification ");
                         Console.WriteLine(diversification ? "ON" : "OFF");
-                        Console.WriteLine("Change?: (write something)");
-                        if (Console.ReadLine() != null) diversification = !diversification;
+                        Console.WriteLine("Change?: (yes/no)");
+                        if (Console.ReadLine()?.ToLower() == "yes") diversification = !diversification;
 
 
                         break;
