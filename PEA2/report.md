@@ -51,49 +51,45 @@
 
 ### Problem komiwojażera
 
-Problem komiwojażera (ang. travelling salesman problem, TSP) – zagadnienie optymalizacyjne, polegające na znalezieniu
-drogi o najmniejszym koszcie.
-
-komiwojażer - przedstawiciel firmy podróżujący w celu zdobywania klientów i przyjmowania zamówień na towar. (definicja
-ze słownika)
-
-W celu zobrazowania problemu należy wyobrazić sobie tytułowego komiwojażera, który podróżuje między miastami w celu
-wykonywania swojej pracy. Podróż zaczyna z siedziby swojej firmy po czym jego trasa przebiega przez każde miasto
-dokładnie jeden raz, aż w końcu wraca z powrotem do głównego budynku firmy.
-
-Matematycznie prezentujemy ten problem jako graf którego wierzchołki są miastami a łączące je trasy to krawędzie z
-odpowiednimi wagami. Jest to pełny graf ważony oraz może być skierowany, co tworzy problem asymetryczny.
-
-Rozwiązanie problemu komiwojażera sprowadza się do znalezienia właściwego - o najmniejszej sumie wag krawędzi - cyklu
-Hamiltona, czyli cyklu przechodzącego przez każdy wierzchołek grafu dokładnie jeden raz. Przeszukanie wszystkich cykli (
-czyli zastosowanie metody _Brute Force_(przegląd zupełny)) nie jest optymalną metodą, jako że prowadzi do wykładniczej
-złożoności obliczeniowej - $O(n!)$, dla której problemy o dużym $n$ traktowane jako nierozwiązywalne. Klasyfikuje to
-problem komiwojażera jako problem NP-trudny, czyli niedający rozwiązania w czasie wielomianowym. To powoduje konieczność
-skorzystania z tzw. algorytmów heurystycznych bądź metaheurystycznych (bardziej ogólnych), a w naszym przypadku
-konkretnie algorytmu _Tabu search_ oraz _Simulated annealing_.
+Problem komiwojażera (ang. travelling salesman problem, TSP) – zagadnienie optymalizacyjne, polegające na znalezieniu drogi o najmniejszym koszcie.
+komiwojażer - przedstawiciel firmy podróżujący w celu zdobywania klientów i przyjmowania zamówień na towar. (definicja ze słownika)
+W celu zobrazowania problemu należy wyobrazić sobie tytułowego komiwojażera, który podróżuje między miastami w celu wykonywania swojej pracy. Podróż zaczyna z siedziby swojej firmy po czym jego trasa przebiega przez każde miasto dokładnie jeden raz, aż w końcu wraca z powrotem do głównego budynku firmy. Matematycznie prezentujemy ten problem jako graf którego wierzchołki są miastami a łączące je trasy to krawędzie z odpowiednimi wagami. Jest to pełny graf ważony oraz może być skierowany, co tworzy problem asymetryczny.
+Rozwiązanie problemu komiwojażera sprowadza się do znalezienia właściwego - o najmniejszej sumie wag krawędzi - cyklu Hamiltona, czyli cyklu przechodzącego przez każdy wierzchołek grafu dokładnie jeden raz. Przeszukanie wszystkich cykli (czyli zastosowanie metody _Brute Force_(przegląd zupełny)) nie jest optymalną metodą, jako że prowadzi do wykładniczej złożoności obliczeniowej - $O(n!)$, dla której problemy o dużym $n$ traktowane jako nierozwiązywalne. Klasyfikuje to problem komiwojażera jako problem NP-trudny, czyli niedający rozwiązania w czasie wielomianowym. To powoduje konieczność skorzystania z tzw. algorytmów heurystycznych bądź metaheurystycznych (bardziej ogólnych), a w naszym przypadku konkretnie algorytmu _Tabu search_ oraz _Simulated annealing_.
 
 ### Simulated annealing (Symulowanie wyżarzanie)
 
-Algorytm Simulated Annealing (symulowane wyżarzanie) to kolejna z metod przeszukiwania lokalnego - która po- dobnie jak
-Tabu search - bazuje na dynamicznej zmianie sąsiedztwa danego rozwiązania, ale w odróżnieniu od Tabu Search nie
-przeszukuje całego sąsiedztwa i zmiana zachodzi pod pewnym, ściśle określonym matematycznym równaniem
-prawdopodobieństwem. Algorytm powstał na podstawie algorytmu autorstwa N. Metropolisa, służącemu do symulacji zachowań
-grupy atomów znajdujących się w równowadze termodynamicznej przy zadanej temperaturze.Zamiast zmiany energii zostały
-wprowadzone pojęcia nowej i starej wartości funkcji celu, zaś początkowa temperatura w algorytmie zastępuje początkową
-energię. Bardzo ogólnie - algorytm polega na losowym przetasowaniu ścieżki i przyjęciu nowego rozwiązania jeżeli jest
-lepsze, a jeżeli jest gorsze to przyjęcie go z pewnym prawdopodobieństwem. Umożliwia to wychodzenie poza obszar minimum
-lokalnego, co znacznie ułatwia odnalezienie minimum globalnego. Niezbędne jest jednak odpowiednie „nastrojenie”
-algorytmu, czyli ustawienie specyficznych dla niego parametrów, które i tak nie daje pewności znalezienia minimum
-globalnego, gdyż zawsze występuje pewien czynnik losowy - w generowaniu sąsiada i w funkcji prawdopodobieństwa.
+Algorytm Simulated Annealing (symulowane wyżarzanie) to kolejna z metod przeszukiwania lokalnego - która podobnie jak Tabu search - bazuje na dynamicznej zmianie sąsiedztwa danego rozwiązania, ale w odróżnieniu od Tabu Search nie przeszukuje całego sąsiedztwa i zmiana zachodzi pod pewnym, ściśle określonym matematycznym równaniem prawdopodobieństwem.
+Algorytm powstał na podstawie algorytmu autorstwa N. Metropolisa, służącemu do symulacji zachowań grupy atomów znajdujących się w równowadze termodynamicznej przy zadanej temperaturze.
+Zamiast zmiany energii zostały wprowadzone pojęcia nowej i starej wartości funkcji celu, zaś początkowa temperatura w algorytmie zastępuje początkową energię.
+Bardzo ogólnie - algorytm polega na losowym przetasowaniu ścieżki i przyjęciu nowego rozwiązania jeżeli jest lepsze, a jeżeli jest gorsze to przyjęcie go z pewnym prawdopodobieństwem.
+Umożliwia to wychodzenie poza obszar minimum lokalnego, co znacznie ułatwia odnalezienie minimum globalnego.
+Niezbędne jest jednak odpowiednie „nastrojenie” algorytmu, czyli ustawienie specyficznych dla niego parametrów, które i tak nie daje pewności znalezienia minimum globalnego, gdyż zawsze występuje pewien czynnik losowy - w generowaniu sąsiada i w funkcji prawdopodobieństwa.
+
+W symulowanym wyżarzaniu możemy wyróżnić następujące parametry:
+
+- Czas: podawany przez użytkownika,
+- Temperatura początkowa: wyznaczana w programie jako iloczyn wielkości problemu oraz wartości ,losowo znalezionej ścieżki (w celu ustawienia wielkości temperatury aby był dostosowana do wartości ścieżek w podanym problemie),
+- Długość epoki - liczba wewnętrznych iteracji dla jednej temperatury: 10-krotna wartość wielkości problemu,
+- Funkcja wychładzania: stała wartość ustalona na 0.99, więc $T_{next} = 0.99 * T_{prev}$
+- Funkcja prawdopodobieństwa: $e^{-\frac{local \ cost - global \ cost}{temperature}}$.
+
+Wykonywanie algorytmu kończy się wraz z upływem podanego czasu.
 
 ### Tabu Search
 
-Algorytm Tabu search (przeszukiwanie tabu, poszukiwanie z zakazami) to jedna z metod przeszukiwania lokalnego bazująca
-na dynamicznej zmianie sąsiedztwa danego rozwiązania i szukaniu lokalnie najlepszych rozwiązań, przeznaczona do
-rozwiązywania problemów optymalizacyjnych. Przeszukiwanie, dzięki wielu parametrom cechującym Tabu search, może - choć
-nie musi - doprowadzić do otrzymania globalnie najlepszego rozwiązania. Algorytm charakteryzuje znikoma złożoność
-pamięciowa oraz brak jawnie zdefiniowanej czasowej złożoności obliczeniowej, gdyż algorytm kończy się wraz z pewnym
-warunkiem, w naszym przypadku wykonywanie go trwa określony czas.
+Algorytm Tabu search (przeszukiwanie tabu, poszukiwanie z zakazami) to jedna z metod przeszukiwania lokalnego bazująca na dynamicznej zmianie sąsiedztwa danego rozwiązania i szukaniu lokalnie najlepszych rozwiązań, przeznaczona do rozwiązywania problemów optymalizacyjnych.
+Przeszukiwanie, dzięki wielu parametrom cechującym Tabu search, może (choć nie musi) doprowadzić do otrzymania globalnie najlepszego rozwiązania.
+Algorytm charakteryzuje znikoma złożoność pamięciowa oraz brak jawnie zdefiniowanej czasowej złożoności obliczeniowej, gdyż algorytm kończy się wraz z pewnym warunkiem, w naszym przypadku wykonywanie go trwa określony czas.
+
+W zaimplementowanym Tabu Search możemy wyróżnić następujące parametry:
+
+- Czas: podawany przez użytkownika,
+- Kadencja: $\sqrt{problem \ size}$
+- Ilość braku polepszenia ścieżki w celu zastosowania dywersyfikacji: ustawiona na stałą wartość 20.
+
+Lista Tabu została zaimplementowana jako tablica dwuwymiarowa (macierz $n \times n$) gdzie aktualna kadencja jest oznaczana jako $tabuList[i,j]$ gdzie $i, \ j$ to sąsiedztwo dla wierzchołków $i$ oraz $j$.
+
+Wykonywanie algorytmu kończy się wraz z upływem podanego czasu.
 
 ### Typy sąsiedztwa
 
@@ -580,6 +576,8 @@ W tabelach zostały umieszczone wartości gdy zachodziła zmiana w znalezionym r
 | 20  | 49090.64  | 5602    | 105.96        |
 
 ![443-TS-REVERSE-ON](Extra\results\443\pictures\TabuSearch-REVERSE-ON-443.png)
+
+</p>
 
 ## Wnioski
 
