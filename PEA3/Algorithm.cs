@@ -135,12 +135,12 @@ namespace PEA3
                     child2 = parent2;
                 }
 
-                var mutationChance = Random.Next(); // value <0,1>
+                var mutationChance = Random.NextDouble(); // value <0,1>
                 // mutation chance for first child
                 if (mutationChance < mutationRate)
                     DoMutation(child1, _mutation);
 
-                mutationChance = Random.Next(); // value <0,1>
+                mutationChance = Random.NextDouble(); // value <0,1>
                 // mutation chance for second child
                 if (mutationChance < mutationRate)
                     DoMutation(child2, _mutation);
