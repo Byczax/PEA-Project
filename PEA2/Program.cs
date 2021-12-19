@@ -187,11 +187,6 @@ namespace PEA2
             void PrintParamsValues()
             {
                 Console.WriteLine("=========================");
-                // Console.WriteLine($"Time [s]: {trialTime}");
-                // Console.Write("Neighbourhood: ");
-                // Console.WriteLine(neighbourhood == Algorithms.Swap ? "SWAP" : "REVERSE");
-                // Console.Write("Diversification: ");
-                // Console.WriteLine(diversification ? "Diversification: ON" : "Diversification: OFF");
                 Console.WriteLine(matrix != null
                     ? $"Loaded matrix size: {matrix.Size}"
                     : "Loaded matrix size: NULL");
