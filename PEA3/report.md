@@ -120,7 +120,7 @@ Opis słownictwa:
 
 - **Program** - główny plik zawierający menu wraz z interfejsem użytkownika
 - **Essentials** - Klasa statyczna z podstawowymi narzędziami jak np. liczenie wartości ścieżki, generowanie losowego problemu, etc.
-- **Matrix** - Klasa statyczna reprezentująca problem jak macierz sąsiedztwa wraz z funkcjami na niej operującymi
+- **Matrix** - Klasa statyczna reprezentująca problem jako macierz sąsiedztwa wraz z funkcjami na niej operującymi
 - **Algorithm** - Klasa statyczna zawierająca wszystkie potrzebne algorytmy i funkcje które głównie działają przy algorytmie genetycznym: krzyżowanie, mutacje oraz sam algorytm.
 
 ## Plan eksperymentu
@@ -560,11 +560,11 @@ Szansa mieszania została ustawiona na stałą wartość **0.8**.
 | best road          | 7726   | 6021   | 5182   | 4776   | 4567   | 4356    | 4186    | 3978    | 3789    | 3625    | 3468     | 3316    |
 | relative error [%] | 184.04 | 121.36 | 90.51  | 75.59  | 67.9   | 60.15   | 53.9    | 46.25   | 39.3    | 33.27   | 27.5     | 21.91   |
 
-![pop17](extra\results\pop\pictures\pop-17.png)
+![pop17](extra/results\pop/pictures/pop-17.png)
 
-![pop100](extra\results\pop\pictures\pop-100.png)
+![pop100](extra/results\pop/pictures/pop-100.png)
 
-![pop443](extra\results\pop\pictures\pop-443.png)
+![pop443](extra/results\pop/pictures/pop-443.png)
 
 ### mutacja
 
@@ -865,11 +865,11 @@ Szansa mieszania została ustawiona na stałą wartość **0.8**.
 | best road          | 7806   | 5756   | 5136   | 4799   | 4551   | 4332   | 4172   | 3976   | 3787    | 3611    | 3415    | 3202   | 2993     |
 | relative error [%] | 186.99 | 111.62 | 88.82  | 76.43  | 67.32  | 59.26  | 53.38  | 46.18  | 39.23   | 32.76   | 25.55   | 17.72  | 10.04    |
 
-![mut17](extra\results\mut\pictures\mut-17.png)
+![mut17](extra/results/mut/pictures/mut-17.png)
 
-![mut100](extra\results\mut\pictures\mut-100.png)
+![mut100](extra/results/mut/pictures/mut-100.png)
 
-![mut443](extra\results\mut\pictures\mut-443.png)
+![mut443](extra/results/mut/pictures/mut-443.png)
 
 ### mieszanie (crossbreed)
 
@@ -1168,11 +1168,11 @@ Populacja została ustawiona na stałą wartość **300**.
 | best road          | 7915   | 6038   | 5127   | 4700   | 4453  | 4257   | 4086   | 3856   | 3674    | 3478   | 3308    | 3107    | 2940     |
 | relative error [%] | 190.99 | 121.99 | 88.49  | 72.79  | 63.71 | 56.51  | 50.22  | 41.76  | 35.07   | 27.87  | 21.62   | 14.23   | 8.09     |
 
-![cross17](extra\results\cross\pictures\cross-17.png)
+![cross17](extra/results/cross/pictures/cross-17.png)
 
-![cross100](extra\results\cross\pictures\cross-100.png)
+![cross100](extra/results/cross/pictures/cross-100.png)
 
-![cross443](extra\results\cross\pictures\cross-443.png)
+![cross443](extra/results/cross/pictures/cross-443.png)
 
 ## Wnioski
 
