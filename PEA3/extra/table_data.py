@@ -27,7 +27,7 @@ def read_text_file(filepath):
         # results_array[2].append(road)
         # results_array[3].append(relative)
     with open(f"results.csv", 'a') as data_file:
-        data_file.write(f"\n#### {filepath.split('.')[0]}\n\n| ")
+        data_file.write(f"\n- **{filepath.split('.')[0]}**\n\n| ")
         
         for _ in range(len(results_array[0])-1):
             data_file.write(f"| ")

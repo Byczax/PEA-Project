@@ -269,7 +269,7 @@ namespace PEA3
                         TestCrossbreed();
                         break;
                     case 5: // test all
-                        (string, int)[] files = { ("tsp_17.txt", 39), ("tsp_100.txt", 1788), ("tsp_443.txt", 2720) };
+                        (string, int)[] files = { ("tsp_17.txt", 39), ("tsp_100.txt", 36230), ("tsp_443.txt", 2720) };
                         foreach (var (item1, item2) in files)
                         {
                             matrix = Essentials.ReadFile(item1);
