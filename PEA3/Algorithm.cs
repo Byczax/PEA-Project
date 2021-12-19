@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace PEA3
@@ -23,10 +24,12 @@ namespace PEA3
         /// <param name="mutationRate"></param>
         /// <param name="crossFunc"></param>
         /// <param name="crossRate"></param>
+        /// <param name="testIt"></param>
+        /// <param name="filename"></param>
         /// <returns>best found permutation</returns>
         public static int[] GeneticAlgorithm(Matrix matrix, int populationSize, long trialTime,
             Action<int[], int, int> mutation, double mutationRate, Func<int[], int[], int[]> crossFunc,
-            double crossRate)
+            double crossRate, bool testIt, string filename)
         {
             var populationList = new List<int[]>(populationSize); // create population list
             var populationValue = new int[populationSize]; // array for every population cost
@@ -34,6 +37,15 @@ namespace PEA3
             _crossbreed = crossFunc; // get selected crossover algorithm
             _mutation = mutation; // get selected mutation algorithm
             _size = matrix.Size; // get global problem size for other functions
+
+            // if (testIt)
+            // {
+            //     var mutationStr = mutation == Swap ? "S" : "R";
+            //     var crossStr = crossFunc == OrderCrossover ? "OX" : "PMX";
+            //     filename = "results/" + $"{_size}-{populationSize}-{mutationRate}-{crossRate}-{mutationStr}-{crossStr}+csv";
+            //     filename = filename.Replace(".", "_");
+            //     filename = filename.Replace("+", ".");
+            // }
 
             // create population for given size
             for (var i = 0; i < populationSize; i++)
@@ -48,6 +60,11 @@ namespace PEA3
             // run for given time by user
             while (Timer.ElapsedMilliseconds <= trialTime * 1000)
             {
+                if (testIt)
+                {
+                    File.AppendAllText(filename, $"{Timer.ElapsedTicks};{bestRoad}\n");
+                }
+
                 // get from population random parents
                 var parents = Selection(populationSize, matrix.Size, populationValue);
 
