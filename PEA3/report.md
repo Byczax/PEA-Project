@@ -57,7 +57,35 @@ Algorytm genetyczny jest to rodzaj heurystyki, należy do grupy algorytmów ewol
 
 #### Opis działania operatorów krzyżowania
 
-<!-- TODO Opis -->
+Przykład działania algorytmów mieszających na przykładowych tablicach:
+
+```m
+tablica tab1 = [6,2,3,4,1,7,5]
+tablica tab2 = [5,2,4,1,3,7,6]
+
+index a = 2
+index b = 5
+
+Przeprowadzenie algorytmu PMX:
+
+Wstawienie fragmentu z tab2:
+
+wynik = [_,2,4,1,3,_,_]
+
+Wypełnienie wartościami które nie posiadają konfliktów:
+
+[_,2,4,1,3,_,_] -> [6,2,4,1,3,7,5]
+
+Przeprowadzenie algorytmu OX:
+
+Skopiowanie z tab1 fragmentu pomiędzy indeksami
+
+wynik = [_,2,3,4,1,_,_]
+
+Następnie dopóki tablica wynikowa nie będzie wypełniona dodajemy elementy z tab2 które się jeszcze nie pojawiły:
+
+wynik = [_,2,3,4,1,_,_] -> [_,2,3,4,1,7,_] -> [_,2,3,4,1,7,6] -> [5,2,3,4,1,7,6]
+```
 
 #### Opis sposobów mutacji
 
@@ -147,8 +175,6 @@ Przy sprawdzaniu **populacji** zostały sprawdzone 4 różne rozmiary:
 Szansa mutacji została ustawiona na stałą wartość **0.01**.
 
 Szansa mieszania została ustawiona na stałą wartość **0.8**.
-
-- **100-100-0_01-0_8-R-OX**
 
 - **17-100-0_01-0_8-R-OX**
 
@@ -271,6 +297,14 @@ Szansa mieszania została ustawiona na stałą wartość **0.8**.
 | relative error [%] | 105.13 | 58.97 | 48.72 | 46.15 | 20.51 | 12.82  |
 
 - **17-500-0_01-0_8-S-PMX**
+
+|                    |       |       |       |       |       |       |       |      |
+| ------------------ | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ---- |
+| time [ms]          | 0.26  | 0.45  | 0.61  | 1.23  | 1.59  | 2.45  | 4.57  | 5.07 |
+| best road          | 92    | 73    | 65    | 55    | 52    | 47    | 44    | 42   |
+| relative error [%] | 135.9 | 87.18 | 66.67 | 41.03 | 33.33 | 20.51 | 12.82 | 7.69 |
+
+- **100-100-0_01-0_8-R-OX**
 
 |                    |        |         |         |         |         |         |        |         |         |         |         |         |         |
 | ------------------ | ------ | ------- | ------- | ------- | ------- | ------- | ------ | ------- | ------- | ------- | ------- | ------- | ------- |
@@ -397,12 +431,6 @@ Szansa mieszania została ustawiona na stałą wartość **0.8**.
 | time [ms]          | 0.5     | 30.44   | 44.21   | 59.6    | 68.77  | 79.33   | 115.82  | 161.03 | 285.54  | 482.49  | 790.48  | 2109.78 | 4404.67 |
 | best road          | 155841  | 121784  | 98777   | 83370   | 73494  | 70439   | 67089   | 63946  | 60747   | 58735   | 55118   | 53288   | 51577   |
 | relative error [%] | 8615.94 | 6711.19 | 5424.44 | 4562.75 | 4010.4 | 3839.54 | 3652.18 | 3476.4 | 3297.48 | 3184.96 | 2982.66 | 2880.31 | 2784.62 |
-
-|                    |       |       |       |       |       |       |       |      |
-| ------------------ | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ---- |
-| time [ms]          | 0.26  | 0.45  | 0.61  | 1.23  | 1.59  | 2.45  | 4.57  | 5.07 |
-| best road          | 92    | 73    | 65    | 55    | 52    | 47    | 44    | 42   |
-| relative error [%] | 135.9 | 87.18 | 66.67 | 41.03 | 33.33 | 20.51 | 12.82 | 7.69 |
 
 - **443-100-0_01-0_8-R-OX**
 
@@ -1148,6 +1176,17 @@ Populacja została ustawiona na stałą wartość **300**.
 
 ## Wnioski
 
+Na wykresach można zauważyć że algorytm genetyczny zachowuje się inaczej przy każdym postawionym mu problemie, oznacza to że dla każdego problemu musimy indywidualnie dostosowywać parametry.
+
+Przy badaniu populacji można zauważyć że dla małych problemów mała populacja jest wystarczająca, wystarczy wartość 300, dla wartości 1000 program zbyt długo sprawdza naszą populację przez co wykonuje mniej mutacji przybliżających nas do rozwiązania.
+
+Inaczej sprawa się ma przy większych problemach, dla 100 oraz 443 można zauważyć że populacja 1000 radzi sobie najlepiej przy znajdowaniu rozwiązania, które było naprawdę blisko poprawnego wyniku (błąd względny poniżej 20%)
+
+Przy sprawdzaniu częstotliwości mutacji wyszło że nie ma ona znaczenia przy małych problemach a przy dużych im większa częstotliwość tym lepiej.
+
+Przy algorytmach krzyżujących wyniki pokazywały skrajne rezultaty, tzn. że dla niskiego współczynnika oraz dużego współczynnika przy połączeniu z odpowiednim algorytmem oraz techniką mutacji można otrzymać interesujące nas rezultaty.
+
+Podsumowując algorytm genetyczny jest bardzo mocnym narzędziem dzięki któremu można znaleźć poprawne drogi dla naprawdę dużych problemów, w naszym przypadku od poprawnego rozwiązania dla problemu 443 dzielił nas błąd względny wynoszący jedynie niecałe **9%**, więc dając wystarczająco dużo czasu pozwoli to nam na znalezienie poprawnego rozwiązania.
 <!-- TODO Wnioski -->
 
 ## Bibliografia
