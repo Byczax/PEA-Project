@@ -155,6 +155,8 @@ Na wykresach w legendzie zostały zastosowane następujące "kody":
 - R - Mutacja typu **Reverse**
 - PMX - Partially Matched Crossover
 - OX - Order Crossover
+- BATTLE - Selekcja turniejowa
+- ROLL - Selekcja ruletkowa
 
 Wartości trzycyfrowe to są wielkości populacji.
 
@@ -163,7 +165,7 @@ Wartości **0.01, 0.05, 0.1** szanse mutacji.
 Wartości **0.5, 0.7, 0.9** to szanse mieszania.
 
 Nazwy tabel:
-A-B-C-D-E-F gdzie:
+A-B-C-D-E-F-G gdzie:
 
 - A - Wielkość problemu
 - B - Populacja
@@ -171,6 +173,9 @@ A-B-C-D-E-F gdzie:
 - D - Szansa mieszania
 - E - Sposób mutacji
 - F - Sposób mieszania
+- G - Sposób selekcji
+
+(G występuje jedynie przy teście selekcji)
 
 ## Wyniki eksperymentów
 
@@ -251,8 +256,6 @@ Szansa mieszania została ustawiona na stałą wartość **0.8**.
 | best road          | 60    | 57    | 47    | 45    | 44    | 42    | 41     | 40     | 39       |
 | relative error [%] | 53.85 | 46.15 | 20.51 | 15.38 | 12.82 | 7.69  | 5.13   | 2.56   | 0.0      |
 
-![selection17](extra/results\select/pictures/select-17.png)
-
 - **100-300-0_1-0_8-R-OX-BATTLE**
 
 |                    |        |        |        |        |        |        |        |        |        |       |        |        |       |
@@ -316,8 +319,6 @@ Szansa mieszania została ustawiona na stałą wartość **0.8**.
 | time [ms]          | 0.37   | 158.38 | 249.6  | 333.02 | 417.4 | 613.39 | 1133.08 | 1446.82 | 2307.34 | 3393.3 | 11251.22 | 19625.72 | 46984.0 |
 | best road          | 162420 | 113433 | 88312  | 73465  | 67224 | 63850  | 60308   | 57969   | 55671   | 53169  | 51907    | 50476    | 48055   |
 | relative error [%] | 348.3  | 213.09 | 143.75 | 102.77 | 85.55 | 76.24  | 66.46   | 60.0    | 53.66   | 46.75  | 43.27    | 39.32    | 32.64   |
-
-![selection100](extra/results\select/pictures/select-100.png)
 
 - **443-300-0_1-0_8-R-OX-BATTLE**
 
@@ -383,7 +384,11 @@ Szansa mieszania została ustawiona na stałą wartość **0.8**.
 | best road          | 7838   | 6767   | 5853    | 5145    | 4571    | 4211    | 4048    | 3907    | 3799    | 3703    | 3610     | 3518     | 3419     |
 | relative error [%] | 188.16 | 148.79 | 115.18  | 89.15   | 68.05   | 54.82   | 48.82   | 43.64   | 39.67   | 36.14   | 32.72    | 29.34    | 25.7     |
 
-![selection443](extra/results\select/pictures/select-443.png)
+![selection17](extra/results/select/pictures/select-17.png)
+
+![selection100](extra/results/select/pictures/select-100.png)
+
+![selection443](extra/results/select/pictures/select-443.png)
 
 Na wykresach można zauważyć że selekcja ruletkowa działa jedynie dla małych problemów, dla większych lepsza jest selekcja turniejowa którą zastosujemy w kolejnych testach.
 
@@ -524,8 +529,6 @@ Szansa mieszania została ustawiona na stałą wartość **0.8**.
 | best road          | 92    | 73    | 65    | 55    | 52    | 47    | 44    | 42   |
 | relative error [%] | 135.9 | 87.18 | 66.67 | 41.03 | 33.33 | 20.51 | 12.82 | 7.69 |
 
-![pop17](extra/results\pop/pictures/pop-17.png)
-
 - **100-100-0_01-0_8-R-OX**
 
 |                    |        |        |        |        |        |        |        |        |        |        |         |         |         |
@@ -653,8 +656,6 @@ Szansa mieszania została ustawiona na stałą wartość **0.8**.
 | time [ms]          | 0.5    | 30.44  | 44.21  | 59.6   | 68.77  | 79.33 | 115.82 | 161.03 | 285.54 | 482.49 | 790.48 | 2109.78 | 4404.67 |
 | best road          | 155841 | 121784 | 98777  | 83370  | 73494  | 70439 | 67089  | 63946  | 60747  | 58735  | 55118  | 53288   | 51577   |
 | relative error [%] | 330.14 | 236.14 | 172.64 | 130.11 | 102.85 | 94.42 | 85.18  | 76.5   | 67.67  | 62.12  | 52.13  | 47.08   | 42.36   |
-
-![pop100](extra/results\pop/pictures/pop-100.png)
 
 - **443-100-0_01-0_8-R-OX**
 
@@ -784,7 +785,11 @@ Szansa mieszania została ustawiona na stałą wartość **0.8**.
 | best road          | 7726   | 6021   | 5182   | 4776   | 4567   | 4356    | 4186    | 3978    | 3789    | 3625    | 3468     | 3316    |
 | relative error [%] | 184.04 | 121.36 | 90.51  | 75.59  | 67.9   | 60.15   | 53.9    | 46.25   | 39.3    | 33.27   | 27.5     | 21.91   |
 
-![pop443](extra/results\pop/pictures/pop-443.png)
+![pop17](extra/results/pop/pictures/pop-17.png)
+
+![pop100](extra/results/pop/pictures/pop-100.png)
+
+![pop443](extra/results/pop/pictures/pop-443.png)
 
 ### Mutacja
 
@@ -792,8 +797,6 @@ Przy sprawdzaniu **mutacji** zostały sprawdzone 3 wartości:
 **0.01, 0.05** oraz **0.1**.
 
 Populacja została ustawiona na stałą wartość 300 ponieważ to był wynik optymalny dla każdego rozmiaru.
-
-<!-- (bez faworyzacji żadnego rozmiaru). -->
 
 Szansa mieszania została ustawiona na stałą wartość **0.8**.
 
