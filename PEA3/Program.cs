@@ -84,7 +84,7 @@ namespace PEA3
             var testIt = false;
             Action<int[], int, int> mutation = Algorithms.Swap;
             Func<int[], int[], int[]> crossbreed = Algorithms.PartiallyMatchedCrossover;
-            Func<int, int, int[], int[]> selection = Algorithms.SelectionTournament;
+            Func<int, int[], int[]> selection = Algorithms.SelectionTournament;
 
             void DisplayResults(int[] array)
             {
@@ -237,7 +237,7 @@ namespace PEA3
 
             Action<int[], int, int> mutation;
             Func<int[], int[], int[]> crossbreed;
-            Func<int, int, int[], int[]> selection = Algorithms.SelectionTournament;
+            Func<int, int[], int[]> selection = Algorithms.SelectionTournament;
             while (!exit)
             {
                 PrintParamsValues();
@@ -317,7 +317,7 @@ namespace PEA3
             void TestGenetic(Matrix givenMatrix, int givenPopulation, long givenTrialTime,
                 Action<int[], int, int> givenMutation, double givenMutationRate,
                 Func<int[], int[], int[]> givenCrossbreed,
-                double givenCrossRate, string folder, Func<int, int, int[], int[]> givenSelection)
+                double givenCrossRate, string folder, Func<int, int[], int[]> givenSelection)
             {
                 var mutationStr = givenMutation == Algorithms.Swap ? "S" : "R";
                 var crossStr = givenCrossbreed == Algorithms.OrderCrossover ? "OX" : "PMX";

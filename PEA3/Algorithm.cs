@@ -30,7 +30,7 @@ namespace PEA3
         /// <returns>best found permutation</returns>
         public static int[] GeneticAlgorithm(Matrix matrix, int populationSize, long trialTime,
             Action<int[], int, int> mutation, double mutationRate, Func<int[], int[], int[]> crossFunc,
-            double crossRate, bool testIt, string filename, Func<int, int, int[], int[]> selection = null)
+            double crossRate, bool testIt, string filename, Func<int, int[], int[]> selection = null)
         {
             selection ??= SelectionTournament;
             var populationList = new List<int[]>(populationSize); // create population list
@@ -59,7 +59,7 @@ namespace PEA3
                 }
 
                 // get from population random parents
-                var parents = selection(populationSize, matrix.Size, populationValue);
+                var parents = selection(populationSize, populationValue);
 
                 // create new generation
                 populationList = CreateNewGeneration(parents, populationSize, populationList, crossRate, mutationRate);
@@ -81,14 +81,13 @@ namespace PEA3
         /// Tournament selector for new random population to change
         /// </summary>
         /// <param name="populationSize"></param>
-        /// <param name="size"></param>
         /// <param name="population"></param>
         /// <returns>selected population</returns>
-        public static int[] SelectionTournament(int populationSize, int size, IReadOnlyList<int> population)
+        public static int[] SelectionTournament(int populationSize, IReadOnlyList<int> population)
         {
-            var parents = new int[size]; // list of parents indexes
+            var parents = new int[populationSize]; // list of parents indexes
             // get parents equal to population size
-            for (var i = 0; i < populationSize; i++)
+            for (var i = 0; i < populationSize - 1; i++)
             {
                 var index1 = Random.Next(1, populationSize);
                 int index2;
@@ -109,7 +108,7 @@ namespace PEA3
             return parents;
         }
 
-        public static int[] SelectionRoulette(int populationSize, int size, IReadOnlyList<int> population)
+        public static int[] SelectionRouletteV2(int populationSize, IReadOnlyList<int> population)
         {
             int Roll(IReadOnlyList<double> chances)
             {
@@ -129,15 +128,52 @@ namespace PEA3
 
             var parents = new int[populationSize]; // list of parents indexes
             var chanceList = new double[populationSize];
-            for (var i = 0; i < populationSize; i++) // get chance for each individual
+
+            var fitness = 0.0;
+            // 1. calculate total fitness
+            for (var i = 0; i < populationSize; i++)
             {
-                chanceList[i] = (population[i] * 1.0) / population.Sum();
+                fitness += 1.0 / population[i];
             }
 
-            // get parents equal to population size
+            // 2. calculate chance for every element
+            for (var i = 0; i < populationSize; i++)
+            {
+                chanceList[i] = (1.0 / population[i]) / fitness;
+            }
+
+            // 3. Roll until we get full list
             for (var i = 0; i < populationSize; i++)
             {
                 parents[i] = Roll(chanceList);
+            }
+
+            return parents;
+        }
+
+        public static int[] SelectionRoulette(int populationSize, IReadOnlyList<int> population)
+        {
+            int Roll(int populationSum, int maxValue)
+            {
+                var number = Random.Next(0, populationSum);
+                var pick = 0;
+                for (var i = 0; i < populationSize; i++)
+                {
+                    number -= maxValue - population[i];
+                    if (number > 0) continue;
+                    pick = i;
+                    break;
+                }
+
+                return pick;
+            }
+
+            var parents = new int[populationSize];
+            var maxValue = population.Max();
+            var populationSum = population.Sum(individual => maxValue - individual);
+            for (var i = 0; i < populationSize; i++)
+            {
+                parents[i] = Roll(populationSum, maxValue);
             }
 
             return parents;
