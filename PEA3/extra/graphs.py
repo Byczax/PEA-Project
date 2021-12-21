@@ -62,6 +62,7 @@ def plot_data(data, title):
     # color_darkblue = []
     colors = ["crimson", "salmon", "red", "brown", "dodgerblue", "blue", "steelblue", "lightblue", "limegreen",
               "olive", "lawngreen", "seagreen", "tan", "orange", "gold", "moccasin", "violet", "fuchsia", "magenta", "orchid"]
+    # colors = ["crimson", "dodgerblue", "salmon", "blue", "red", "steelblue", "brown", "lightblue"]
     color_counter = 0
     for values, subtitle in data:
         # print(subtitle)
@@ -76,7 +77,9 @@ def plot_data(data, title):
             subtitle = "".join(
                 [f"{fragment} " for fragment in subtitle.split("-")[1:]])
             subtitle = subtitle.replace("0_01 0_8", "")
-
+        elif title.split("-")[0] == "select":
+            subtitle = "".join(
+                [f"{fragment} " for fragment in subtitle.split("-")[4:]])
         subtitle = subtitle.strip().replace("_", ",")
         # subtitle = subtitle.replace("_",".")
 
