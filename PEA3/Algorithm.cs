@@ -26,26 +26,19 @@ namespace PEA3
         /// <param name="crossRate"></param>
         /// <param name="testIt"></param>
         /// <param name="filename"></param>
+        /// <param name="selection"></param>
         /// <returns>best found permutation</returns>
         public static int[] GeneticAlgorithm(Matrix matrix, int populationSize, long trialTime,
             Action<int[], int, int> mutation, double mutationRate, Func<int[], int[], int[]> crossFunc,
-            double crossRate, bool testIt, string filename)
+            double crossRate, bool testIt, string filename, Func<int, int, int[], int[]> selection = null)
         {
+            selection ??= SelectionTournament;
             var populationList = new List<int[]>(populationSize); // create population list
             var populationValue = new int[populationSize]; // array for every population cost
             var bestRoad = int.MaxValue; // 
             _crossbreed = crossFunc; // get selected crossover algorithm
             _mutation = mutation; // get selected mutation algorithm
             _size = matrix.Size; // get global problem size for other functions
-
-            // if (testIt)
-            // {
-            //     var mutationStr = mutation == Swap ? "S" : "R";
-            //     var crossStr = crossFunc == OrderCrossover ? "OX" : "PMX";
-            //     filename = "results/" + $"{_size}-{populationSize}-{mutationRate}-{crossRate}-{mutationStr}-{crossStr}+csv";
-            //     filename = filename.Replace(".", "_");
-            //     filename = filename.Replace("+", ".");
-            // }
 
             // create population for given size
             for (var i = 0; i < populationSize; i++)
@@ -66,13 +59,12 @@ namespace PEA3
                 }
 
                 // get from population random parents
-                var parents = Selection(populationSize, matrix.Size, populationValue);
+                var parents = selection(populationSize, matrix.Size, populationValue);
 
                 // create new generation
-                var newPopulation =
-                    CreateNewGeneration(parents, populationSize, populationList, crossRate, mutationRate);
+                populationList = CreateNewGeneration(parents, populationSize, populationList, crossRate, mutationRate);
 
-                populationList = newPopulation;
+                // populationList = newPopulation;
                 for (var i = 0; i < populationSize; i++)
                 {
                     populationValue[i] = matrix.CalculateFullRoad(populationList[i]);
@@ -86,16 +78,15 @@ namespace PEA3
         }
 
         /// <summary>
-        /// Selector for new random population to change
+        /// Tournament selector for new random population to change
         /// </summary>
         /// <param name="populationSize"></param>
         /// <param name="size"></param>
         /// <param name="population"></param>
         /// <returns>selected population</returns>
-        private static List<int> Selection(int populationSize, int size, IReadOnlyList<int> population)
+        public static int[] SelectionTournament(int populationSize, int size, IReadOnlyList<int> population)
         {
-            var parents = new List<int>(size); // list of parents indexes
-
+            var parents = new int[size]; // list of parents indexes
             // get parents equal to population size
             for (var i = 0; i < populationSize; i++)
             {
@@ -108,11 +99,45 @@ namespace PEA3
                         break;
                 }
 
-                // get better index
+                // tournament selection
                 var minIndex = population[index1] < population[index2] ? index1 : index2;
 
                 // save index into list
-                parents.Add(minIndex);
+                parents[i] = minIndex;
+            }
+
+            return parents;
+        }
+
+        public static int[] SelectionRoulette(int populationSize, int size, IReadOnlyList<int> population)
+        {
+            int Roll(IReadOnlyList<double> chances)
+            {
+                var pick = 0;
+                var offset = 0.0;
+                var randNumber = Random.NextDouble();
+                for (var i = 0; i < chances.Count; i++)
+                {
+                    offset += chances[i];
+                    if (!(randNumber < offset)) continue;
+                    pick = i;
+                    break;
+                }
+
+                return pick;
+            }
+
+            var parents = new int[populationSize]; // list of parents indexes
+            var chanceList = new double[populationSize];
+            for (var i = 0; i < populationSize; i++) // get chance for each individual
+            {
+                chanceList[i] = (population[i] * 1.0) / population.Sum();
+            }
+
+            // get parents equal to population size
+            for (var i = 0; i < populationSize; i++)
+            {
+                parents[i] = Roll(chanceList);
             }
 
             return parents;

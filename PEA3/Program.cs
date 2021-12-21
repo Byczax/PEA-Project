@@ -24,14 +24,16 @@ internal static class InfoString
                                        "8.Set Crossbreed Rate\n" +
                                        "9.Change Mutation Method\n" +
                                        "10.Change Crossbread Method\n" +
-                                       "11.Run Algorithm\n";
+                                       "11.Change Selection Method\n" +
+                                       "12.Run Algorithm\n";
 
     internal const string AutomatedMenu = "0. Exit\n" +
                                           "1. Read Graph From File\n" +
                                           "2. Examine Population Implact\n" +
                                           "3. Examine Mutation Rate\n" +
                                           "4. Examine Crossbreed Rate\n" +
-                                          "5. Test All Above";
+                                          "5. Test Selection Method\n" +
+                                          "6. Test All Above";
 }
 
 namespace PEA3
@@ -79,8 +81,10 @@ namespace PEA3
             var population = 10;
             var mutationChance = 0.01;
             var crossoverChance = 0.8;
+            var testIt = false;
             Action<int[], int, int> mutation = Algorithms.Swap;
             Func<int[], int[], int[]> crossbreed = Algorithms.PartiallyMatchedCrossover;
+            Func<int, int, int[], int[]> selection = Algorithms.SelectionTournament;
 
             void DisplayResults(int[] array)
             {
@@ -101,6 +105,9 @@ namespace PEA3
                 Console.WriteLine(mutation == Algorithms.Swap ? "SWAP" : "REVERSE");
                 Console.Write("Crossover: ");
                 Console.WriteLine(crossbreed == Algorithms.PartiallyMatchedCrossover ? "PMX" : "OX");
+                Console.Write("Selection: ");
+                Console.WriteLine(selection == Algorithms.SelectionTournament ? "BATTLE" : "ROLL");
+                Console.Write(testIt == false ? "" : "Save Results: ON\n");
 
                 Console.WriteLine(matrix != null
                     ? $"Loaded matrix size: {matrix.Size}"
@@ -172,7 +179,12 @@ namespace PEA3
                             ? Algorithms.OrderCrossover
                             : Algorithms.PartiallyMatchedCrossover;
                         break;
-                    case 11: //genetic algorithm
+                    case 11:
+                        selection = selection == Algorithms.SelectionTournament
+                            ? Algorithms.SelectionRoulette
+                            : Algorithms.SelectionTournament;
+                        break;
+                    case 12: //genetic algorithm
                         if (matrix == null)
                         {
                             Console.WriteLine(InfoString.ErrorNoMatrix);
@@ -185,8 +197,14 @@ namespace PEA3
                             mutation,
                             mutationChance,
                             crossbreed,
-                            crossoverChance, false, "");
+                            crossoverChance,
+                            testIt,
+                            "",
+                            selection);
                         DisplayResults(bestPermutation);
+                        break;
+                    case 13:
+                        testIt = !testIt;
                         break;
                     default:
                         Console.WriteLine(InfoString.ErrorWrongChoice);
@@ -219,6 +237,7 @@ namespace PEA3
 
             Action<int[], int, int> mutation;
             Func<int[], int[], int[]> crossbreed;
+            Func<int, int, int[], int[]> selection = Algorithms.SelectionTournament;
             while (!exit)
             {
                 PrintParamsValues();
@@ -268,7 +287,16 @@ namespace PEA3
 
                         TestCrossbreed();
                         break;
-                    case 5: // test all
+                    case 5: // Examine Selection
+                        if (matrix == null)
+                        {
+                            Console.WriteLine(InfoString.ErrorNoMatrix);
+                            break;
+                        }
+
+                        TestSelection();
+                        break;
+                    case 6: // test all
                         (string, int)[] files = { ("tsp_17.txt", 39), ("tsp_100.txt", 36230), ("tsp_443.txt", 2720) };
                         foreach (var (item1, item2) in files)
                         {
@@ -289,12 +317,13 @@ namespace PEA3
             void TestGenetic(Matrix givenMatrix, int givenPopulation, long givenTrialTime,
                 Action<int[], int, int> givenMutation, double givenMutationRate,
                 Func<int[], int[], int[]> givenCrossbreed,
-                double givenCrossRate, string folder)
+                double givenCrossRate, string folder, Func<int, int, int[], int[]> givenSelection)
             {
                 var mutationStr = givenMutation == Algorithms.Swap ? "S" : "R";
                 var crossStr = givenCrossbreed == Algorithms.OrderCrossover ? "OX" : "PMX";
+                var selectionStr = givenSelection == Algorithms.SelectionTournament ? "BATTLE" : "ROLL";
                 var filename = "results/" + folder +
-                               $"/{givenMatrix.Size}-{givenPopulation}-{givenMutationRate}-{givenCrossRate}-{mutationStr}-{crossStr}+csv";
+                               $"/{givenMatrix.Size}-{givenPopulation}-{givenMutationRate}-{givenCrossRate}-{mutationStr}-{crossStr}-{selectionStr}+csv";
                 filename = filename.Replace(".", "_");
                 filename = filename.Replace("+", ".");
                 File.AppendAllText(filename, $"{correctRoad}\n\n");
@@ -308,7 +337,7 @@ namespace PEA3
                         givenMutation,
                         givenMutationRate,
                         givenCrossbreed,
-                        givenCrossRate, true, filename);
+                        givenCrossRate, true, filename, givenSelection);
                 }
             }
 
@@ -323,31 +352,13 @@ namespace PEA3
                     Console.ForegroundColor = ConsoleColor.Magenta;
                     Console.WriteLine("\n" + populationValue + "\n");
                     Console.ResetColor();
-                    mutation = Algorithms.Swap;
-                    crossbreed = Algorithms.PartiallyMatchedCrossover;
-                    Console.WriteLine("0%");
-                    TestGenetic(matrix, populationValue, trialTime, mutation, mutationChance, crossbreed,
-                        crossoverChance, folder);
-                    mutation = Algorithms.Reverse;
-                    Console.WriteLine("25%");
-                    TestGenetic(matrix, populationValue, trialTime, mutation, mutationChance, crossbreed,
-                        crossoverChance, folder);
-                    mutation = Algorithms.Swap;
-                    crossbreed = Algorithms.OrderCrossover;
-                    Console.WriteLine("50%");
-                    TestGenetic(matrix, populationValue, trialTime, mutation, mutationChance, crossbreed,
-                        crossoverChance, folder);
-                    mutation = Algorithms.Reverse;
-                    Console.WriteLine("75%");
-                    TestGenetic(matrix, populationValue, trialTime, mutation, mutationChance, crossbreed,
-                        crossoverChance, folder);
-                    Console.WriteLine("100%");
+                    CombinationTests(populationValue, mutationChance, crossoverChance, folder);
                 }
             }
 
             void TestMutation()
             {
-                double[] mutationValues = {0.05, 0.1 };
+                double[] mutationValues = { 0.05, 0.1 };
                 population = 300;
                 crossoverChance = 0.8;
                 const string folder = "mut";
@@ -358,23 +369,7 @@ namespace PEA3
                     Console.ResetColor();
                     mutation = Algorithms.Swap;
                     crossbreed = Algorithms.PartiallyMatchedCrossover;
-                    Console.WriteLine("0%");
-                    TestGenetic(matrix, population, trialTime, mutation, mutationValue, crossbreed,
-                        crossoverChance, folder);
-                    mutation = Algorithms.Reverse;
-                    Console.WriteLine("25%");
-                    TestGenetic(matrix, population, trialTime, mutation, mutationValue, crossbreed,
-                        crossoverChance, folder);
-                    mutation = Algorithms.Swap;
-                    crossbreed = Algorithms.OrderCrossover;
-                    Console.WriteLine("50%");
-                    TestGenetic(matrix, population, trialTime, mutation, mutationValue, crossbreed,
-                        crossoverChance, folder);
-                    mutation = Algorithms.Reverse;
-                    Console.WriteLine("75%");
-                    TestGenetic(matrix, population, trialTime, mutation, mutationValue, crossbreed, crossoverChance,
-                        folder);
-                    Console.WriteLine("100%");
+                    CombinationTests(population, mutationValue, crossoverChance, folder);
                 }
             }
 
@@ -389,26 +384,49 @@ namespace PEA3
                     Console.ForegroundColor = ConsoleColor.Magenta;
                     Console.WriteLine("\n" + crossbreedValue + "\n");
                     Console.ResetColor();
-                    mutation = Algorithms.Swap;
-                    crossbreed = Algorithms.PartiallyMatchedCrossover;
-                    Console.WriteLine("0%");
-                    TestGenetic(matrix, population, trialTime, mutation, mutationChance, crossbreed, crossbreedValue,
-                        folder);
-                    mutation = Algorithms.Reverse;
-                    Console.WriteLine("25%");
-                    TestGenetic(matrix, population, trialTime, mutation, mutationChance, crossbreed, crossbreedValue,
-                        folder);
-                    mutation = Algorithms.Swap;
-                    crossbreed = Algorithms.OrderCrossover;
-                    Console.WriteLine("50%");
-                    TestGenetic(matrix, population, trialTime, mutation, mutationChance, crossbreed, crossbreedValue,
-                        folder);
-                    mutation = Algorithms.Reverse;
-                    Console.WriteLine("75%");
-                    TestGenetic(matrix, population, trialTime, mutation, mutationChance, crossbreed, crossbreedValue,
-                        folder);
-                    Console.WriteLine("100%");
+                    CombinationTests(population, mutationChance, crossbreedValue, folder);
                 }
+            }
+
+            void TestSelection()
+            {
+                population = 300;
+                mutationChance = 0.1;
+                crossoverChance = 0.8;
+                selection = Algorithms.SelectionTournament;
+
+                CombinationTests(population, mutationChance, crossoverChance, "select");
+                selection = Algorithms.SelectionRoulette;
+                CombinationTests(population, mutationChance, crossoverChance, "select");
+                selection = Algorithms.SelectionTournament;
+            }
+
+            void CombinationTests(int givenPopulation, double givenMutationChance, double givenCrossbreed,
+                string folder)
+            {
+                mutation = Algorithms.Swap;
+                crossbreed = Algorithms.PartiallyMatchedCrossover;
+                Console.WriteLine("0%");
+                TestGenetic(matrix, givenPopulation, trialTime, mutation, givenMutationChance, crossbreed,
+                    givenCrossbreed,
+                    folder, selection);
+                mutation = Algorithms.Reverse;
+                Console.WriteLine("25%");
+                TestGenetic(matrix, givenPopulation, trialTime, mutation, givenMutationChance, crossbreed,
+                    givenCrossbreed,
+                    folder, selection);
+                mutation = Algorithms.Swap;
+                crossbreed = Algorithms.OrderCrossover;
+                Console.WriteLine("50%");
+                TestGenetic(matrix, givenPopulation, trialTime, mutation, givenMutationChance, crossbreed,
+                    givenCrossbreed,
+                    folder, selection);
+                mutation = Algorithms.Reverse;
+                Console.WriteLine("75%");
+                TestGenetic(matrix, givenPopulation, trialTime, mutation, givenMutationChance, crossbreed,
+                    givenCrossbreed,
+                    folder, selection);
+                Console.WriteLine("100%");
             }
         }
     }
